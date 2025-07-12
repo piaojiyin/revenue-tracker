@@ -23,22 +23,30 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, setCurrentStock }) => {
   const [stockInfoData, setStockInfoData] = useState<StockEntity[]>([]);
   const [loading, setLoading] = useState(false);
   const token = useTokenStore((state) => state.token);
+  // 默认股票为台积电-2330
+  const defaultStockId = '2330';
 
   useEffect(() => {
     if (!token) return;
-    setLoading(true);
-    getStockInfoApi()
-      .then((res) => {
+    const fetchStockInfo = async () => {
+      setLoading(true);
+      try {
+        const res = await getStockInfoApi();
         setStockInfoData(res.data || []);
-        setOptions(res.data.slice(0, 100) || []);
-      })
-      .finally(() => setLoading(false));
+        setOptions(res.data || []);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStockInfo();
   }, [token]);
 
   useEffect(() => {
     // 默认选中第一个股票
     if (options && options.length > 0) {
-      setCurrentStock(options[0]);
+      console.log('options', options, options.find(o => o.stock_id === defaultStockId));
+      
+      setCurrentStock(options.find(o => o.stock_id === defaultStockId) || options[0]);
     }
   }, [options]);
 

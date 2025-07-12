@@ -13,7 +13,7 @@ export async function getStockInfoApi() {
       dataset: "TaiwanStockInfo",
       // data_id: '',
       // start_date: '',
-      end_date: dayjs().format("YYYY-MM-DD"),
+      // end_date: dayjs().format("YYYY-MM-DD"),
     },
   });
 }

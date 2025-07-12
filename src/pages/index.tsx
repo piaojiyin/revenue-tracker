@@ -12,29 +12,68 @@ import { getStockMonthRevenueApi } from '../api/request';
 import { StockEntity, StockMonthRevenueEntity } from '../types/stock';
 import { finMindApiRequestParams } from '../types/api';
 import dayjs from "dayjs";
+import Button from '@mui/material/Button';
 const IndexPage: React.FC = () => {
   const [data] = useState(revenueData);
+  // 筛选时间范围
+  const [filtertimeRange, settimeRange] = useState<string[]>([]);
   // 当前选中股票
   const [currentStock, setCurrentStock] = useState<StockEntity | null>(null);
   // 股票月营收
   const [stockMonthRevenueData, setStockMonthRevenueData] = useState<StockMonthRevenueEntity[]>([]);
 
+
+
   useEffect(() => {
-    if (!currentStock || !currentStock.stock_id) return;
+    // 初始化筛选时间范围
+    settimeRange([
+      dayjs().subtract(5, 'year').startOf('year').format('YYYY-MM-DD'),
+      dayjs().startOf('month').format('YYYY-MM-DD'),
+    ]);
+  }, [])
+
+  useEffect(() => {
     // 发起获取月营收API请求
-    const params: finMindApiRequestParams = {
-      data_id: currentStock.stock_id,
-      start_date: dayjs().subtract(5, 'year').format('YYYY-MM-DD'),
-      end_date: dayjs().format('YYYY-MM-DD'),
-    };
-    getStockMonthRevenueApi(params)
-      .then((res) => {
-        setStockMonthRevenueData(res?.data || []);
-      })
-      .catch((err) => {
+    const fetchMonthRevenue = async () => {
+      if (!currentStock || !currentStock.stock_id) return;
+      const params: finMindApiRequestParams = {
+        data_id: currentStock.stock_id,
+        // 计算月营收年增长率，查询比筛选条件往前1年
+        start_date: dayjs(filtertimeRange[0]).subtract(1, 'year').format('YYYY-MM-DD'),
+        end_date: filtertimeRange[1],
+      };
+      try {
+        const res = await getStockMonthRevenueApi(params);
+        // 包含月营收年增长率的数据
+        let StockMonthRevenueDataWidthGrowth: StockMonthRevenueEntity[] = (res?.data || [])
+        const StockMonthRevenueDataMap: any = {}
+        StockMonthRevenueDataWidthGrowth.forEach(item => {
+          StockMonthRevenueDataMap[dayjs(`${item.revenue_year}-${item.revenue_month}`).format('YYYY-MM')] = item
+        });
+        StockMonthRevenueDataWidthGrowth = StockMonthRevenueDataWidthGrowth.map(item => {
+          let growth = 0, growthLabel = ''
+          // 去年同月的營收
+          const monthRevenueLastYear = StockMonthRevenueDataMap[dayjs(`${item.revenue_year - 1}-${item.revenue_month}`).format('YYYY-MM')]
+          if (monthRevenueLastYear) {
+            // 去年同月的營收存在
+            growth = Math.round((item.revenue / monthRevenueLastYear.revenue - 1) * 10000)
+          } else {
+            growth = 0
+          }
+          growthLabel = (growth / 100).toFixed(2)
+          return { ...item, growth, growthLabel };
+        })
+          // 过滤第1年数据（为月营收年增长率计算额外查询）
+          .filter(item => {
+            return dayjs(`${item.revenue_year}-${item.revenue_month}`) >= dayjs(filtertimeRange[0]);
+          })
+        setStockMonthRevenueData(StockMonthRevenueDataWidthGrowth);
+      } catch (err) {
         // 可以 setError 或提示
         console.error('获取月营收失败', err);
-      });
+      }
+    };
+    fetchMonthRevenue();
   }, [currentStock]);
 
   // 处理搜索栏选择
@@ -55,12 +94,22 @@ const IndexPage: React.FC = () => {
         {/* 公司名称单独卡片横向占满主内容区 */}
         <Box mb={3}>
           <Paper elevation={1} sx={{ px: 4, py: 2, borderRadius: 2, width: '100%', textAlign: 'center' }}>
-            <CompanyHeader name={currentStock?.stock_name || data.company.name} code={currentStock?.stock_id || data.company.code} />
+            <CompanyHeader name={currentStock?.stock_name || ''} code={currentStock?.stock_id || ''} />
           </Paper>
         </Box>
         <Paper elevation={2} sx={{ p: { xs: 2, sm: 4 }, borderRadius: 3, boxShadow: 3 }}>
+          {/* 蓝色tab按钮区 */}
+          <Box display="flex" alignItems="center" gap={2} mb={2}>
+            <Button variant="contained" color="primary" sx={{ borderRadius: 2, fontWeight: 600 }} disableElevation>
+              每月營收
+            </Button>
+            <Box flex={1} />
+            <Button variant="contained" color="primary" sx={{ borderRadius: 2, fontWeight: 600 }} disableElevation>
+              近 5 年
+            </Button>
+          </Box>
           {/* 图表区 */}
-          <RevenueChart data={data.chart} />
+          <RevenueChart data={stockMonthRevenueData} />
           {/* 表格区 */}
           <RevenueTable data={stockMonthRevenueData} />
           {/* 页脚说明 */}
