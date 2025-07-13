@@ -51,17 +51,17 @@ const RevenueTable: React.FC<RevenueTableProps> = ({ data }) => {
   return (
     <>
       {/* 详细数据tab */}
-      <Button variant="contained" color="primary" sx={{ borderRadius: 2, fontWeight: 600, mb: 2 }} disableElevation>
+      <Button variant="contained" color="primary" sx={{ borderRadius: 2, fontWeight: 600 }} disableElevation>
         詳細數據
       </Button>
-      <TableContainer component={Paper} ref={containerRef} sx={{ mt: 3, border: '1px solid #e0e0e0', borderRadius: 2 }}>
+      <TableContainer component={Paper} ref={containerRef} sx={{ mt: 2, border: '1px solid #e0e0e0', borderRadius: 2 }}>
         <Table size="small" sx={{ borderCollapse: 'separate', borderSpacing: 0 }}>
           <TableHead>
             <TableRow sx={{
               backgroundColor: '#f6f8fa',
               '& td, & th': { border: '1px solid #e0e0e0' }
             }}>
-              <TableCell sx={{ minWidth: 160, py: 1.5, position: 'sticky', left: 0, background: '#f6f8fa', zIndex: 3 }}>年度月份</TableCell>
+              <TableCell sx={{ minWidth: 160, py: 1.5, position: 'sticky', left: 0, background: '#f6f8fa', zIndex: 3 }}>年度/月份</TableCell>
               {rows.map((row) => (
                 <TableCell key={row.month}>{row.month}</TableCell>
               ))}

@@ -3,7 +3,6 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import { revenueData } from '../mock/revenueData';
 import SearchBar from '../components/SearchBar';
 import CompanyHeader from '../components/CompanyHeader';
 import RevenueChart from '../components/RevenueChart';
@@ -14,7 +13,6 @@ import { finMindApiRequestParams } from '../types/api';
 import dayjs from "dayjs";
 import Button from '@mui/material/Button';
 const IndexPage: React.FC = () => {
-  const [data] = useState(revenueData);
   // 筛选时间范围
   const [filtertimeRange, settimeRange] = useState<string[]>([]);
   // 当前选中股票
@@ -97,7 +95,7 @@ const IndexPage: React.FC = () => {
             <CompanyHeader name={currentStock?.stock_name || ''} code={currentStock?.stock_id || ''} />
           </Paper>
         </Box>
-        <Paper elevation={2} sx={{ p: { xs: 2, sm: 4 }, borderRadius: 3, boxShadow: 3 }}>
+        <Paper elevation={2} sx={{ p: { xs: 2, sm: 4 }, mb:3, borderRadius: 3, boxShadow: 3 }}>
           {/* 蓝色tab按钮区 */}
           <Box display="flex" alignItems="center" gap={2} mb={2}>
             <Button variant="contained" color="primary" sx={{ borderRadius: 2, fontWeight: 600 }} disableElevation>
@@ -110,16 +108,18 @@ const IndexPage: React.FC = () => {
           </Box>
           {/* 图表区 */}
           <RevenueChart data={stockMonthRevenueData} />
+        </Paper>
+        <Paper elevation={3} sx={{ p: { xs: 2, sm: 4 }, borderRadius: 3, boxShadow: 3 }}> 
           {/* 表格区 */}
           <RevenueTable data={stockMonthRevenueData} />
-          {/* 页脚说明 */}
-          <Box mt={2}>
-            <Typography variant="caption" color="text.secondary" align="right" display="block">
-              圖表單位：千元，數據來自公開資訊觀測站<br />
-              網頁圖表歡迎轉貼引用，請註明出處為財報狗
-            </Typography>
-          </Box>
         </Paper>
+        {/* 页脚说明 */}
+        <Box mt={2}>
+          <Typography variant="caption" color="text.secondary" align="right" display="block">
+            圖表單位：千元，數據來自公開資訊觀測站<br />
+            網頁圖表歡迎轉貼引用，請註明出處為財報狗
+          </Typography>
+        </Box>
       </Container>
     </Box>
   );
