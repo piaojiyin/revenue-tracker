@@ -75,7 +75,7 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
     <>
       <Box bgcolor="#fff">
         <ResponsiveContainer width="100%" height={320}>
-          <BarChart data={chartData} margin={{ top: 0, right: 40, left: 40, bottom: 0 }}>
+          <BarChart data={chartData} margin={{ top: 0, right: 0, left: 40, bottom: 0 }}>
             <XAxis
               dataKey="month"
               tick={{ fontSize: 12 }}
@@ -89,8 +89,8 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
                 return String(Number(year) + 1);
               }}
             />
-            <YAxis tickFormatter={v => numberFormatter.format(v)} label={{ value: '千元', position: 'top', offset: 10, style: { textAnchor: 'middle', fontSize: 14 } }} tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-            <YAxis yAxisId="right" orientation="right" label={{ value: '%', position: 'top', offset: 10, style: { textAnchor: 'middle', fontSize: 14 } }} tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+            <YAxis tickFormatter={v => numberFormatter.format(v)} label={{ value: '千元', position: 'top', offset: 10, style: { textAnchor: 'middle', fontSize: 14, fill: '#000' } }} tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+            <YAxis yAxisId="right" orientation="right" label={{ value: '%', position: 'top', offset: 10, style: { textAnchor: 'middle', fontSize: 14, fill: '#000'} }} tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
             <CartesianGrid
               stroke="#e0e0e0"
               horizontal={true}

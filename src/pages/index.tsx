@@ -12,19 +12,18 @@ import { StockEntity, StockMonthRevenueEntity } from '../types/stock';
 import { finMindApiRequestParams } from '../types/api';
 import dayjs from "dayjs";
 import Button from '@mui/material/Button';
+import TimeRangeSelector from '../components/TimeRangeSelector';
 const IndexPage: React.FC = () => {
   // 筛选时间范围
-  const [filtertimeRange, settimeRange] = useState<string[]>([]);
+  const [filterTimeRange, setFilterTimeRange] = useState<string[]>([]);
   // 当前选中股票
   const [currentStock, setCurrentStock] = useState<StockEntity | null>(null);
   // 股票月营收
   const [stockMonthRevenueData, setStockMonthRevenueData] = useState<StockMonthRevenueEntity[]>([]);
 
-
-
   useEffect(() => {
     // 初始化筛选时间范围
-    settimeRange([
+    setFilterTimeRange([
       dayjs().subtract(5, 'year').startOf('year').format('YYYY-MM-DD'),
       dayjs().startOf('month').format('YYYY-MM-DD'),
     ]);
@@ -37,8 +36,8 @@ const IndexPage: React.FC = () => {
       const params: finMindApiRequestParams = {
         data_id: currentStock.stock_id,
         // 计算月营收年增长率，查询比筛选条件往前1年
-        start_date: dayjs(filtertimeRange[0]).subtract(1, 'year').format('YYYY-MM-DD'),
-        end_date: filtertimeRange[1],
+        start_date: dayjs(filterTimeRange[0]).subtract(1, 'year').format('YYYY-MM-DD'),
+        end_date: filterTimeRange[1],
       };
       try {
         const res = await getStockMonthRevenueApi(params);
@@ -63,7 +62,7 @@ const IndexPage: React.FC = () => {
         })
           // 过滤第1年数据（为月营收年增长率计算额外查询）
           .filter(item => {
-            return dayjs(`${item.revenue_year}-${item.revenue_month}`) >= dayjs(filtertimeRange[0]);
+            return dayjs(`${item.revenue_year}-${item.revenue_month}`) >= dayjs(filterTimeRange[0]);
           })
         setStockMonthRevenueData(StockMonthRevenueDataWidthGrowth);
       } catch (err) {
@@ -72,7 +71,7 @@ const IndexPage: React.FC = () => {
       }
     };
     fetchMonthRevenue();
-  }, [currentStock]);
+  }, [currentStock, filterTimeRange]);
 
   // 处理搜索栏选择
   const handleStockChange = (stock: StockEntity) => {
@@ -95,21 +94,19 @@ const IndexPage: React.FC = () => {
             <CompanyHeader name={currentStock?.stock_name || ''} code={currentStock?.stock_id || ''} />
           </Paper>
         </Box>
-        <Paper elevation={2} sx={{ p: { xs: 2, sm: 4 }, mb:3, borderRadius: 3, boxShadow: 3 }}>
+        <Paper elevation={2} sx={{ p: { xs: 2, sm: 4 }, mb: 3, borderRadius: 3, boxShadow: 3 }}>
           {/* 蓝色tab按钮区 */}
           <Box display="flex" alignItems="center" gap={2} mb={2}>
             <Button variant="contained" color="primary" sx={{ borderRadius: 2, fontWeight: 600 }} disableElevation>
               每月營收
             </Button>
             <Box flex={1} />
-            <Button variant="contained" color="primary" sx={{ borderRadius: 2, fontWeight: 600 }} disableElevation>
-              近 5 年
-            </Button>
+            <TimeRangeSelector filterTimeRange={filterTimeRange} setFilterTimeRange={setFilterTimeRange} />
           </Box>
           {/* 图表区 */}
           <RevenueChart data={stockMonthRevenueData} />
         </Paper>
-        <Paper elevation={3} sx={{ p: { xs: 2, sm: 4 }, borderRadius: 3, boxShadow: 3 }}> 
+        <Paper elevation={3} sx={{ p: { xs: 2, sm: 4 }, borderRadius: 3, boxShadow: 3 }}>
           {/* 表格区 */}
           <RevenueTable data={stockMonthRevenueData} />
         </Paper>
