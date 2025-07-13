@@ -13,24 +13,40 @@ import dayjs from 'dayjs'
 interface RevenueTableProps {
   data: StockMonthRevenueEntity[];
 }
+interface RevenueTableRows {
+  month: string;
+  revenue: number;
+  growth: string | undefined;
+}
+
+
 const RevenueTable: React.FC<RevenueTableProps> = ({ data }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // 月份为行，数据类型为列
   const columns = [
     { key: 'revenue', label: '每月營收' },
-    { key: 'growthLabel', label: '單月營收年增率 (%)' },
+    { key: 'growth', label: '單月營收年增率 (%)' },
   ];
 
-  const [rows, setRows] = useState<any[]>([]);
+  // 默认表格占位数据 
+  const defaultRows = () => new Array(6).fill({
+    month: '-',
+    revenue: '-',
+    growth: '-',
+  });
+  const [rows, setRows] = useState<RevenueTableRows[]>(defaultRows());
   const numberFormatter = new Intl.NumberFormat('zh-TW'); // 或 'zh-TW'、'zh-CN' 等
 
   useEffect(() => {
-    if (!data.length) return
+    if (!data.length) {
+      setRows(defaultRows());
+      return
+    }
     setRows(data.map((item) => ({
       month: dayjs(`${item.revenue_year}-${item.revenue_month}`).format('YYYY/MM'),
       revenue: item.revenue / 1000,
-      growthLabel: item.growthLabel,
+      growth: item.growth,
     })));
   }, [data])
 
@@ -43,10 +59,6 @@ const RevenueTable: React.FC<RevenueTableProps> = ({ data }) => {
       });
     }
   }, [data]);
-
-  useEffect(() => {
-    console.log('rows', rows)
-  }, [rows])
 
   return (
     <>
@@ -62,8 +74,8 @@ const RevenueTable: React.FC<RevenueTableProps> = ({ data }) => {
               '& td, & th': { border: '1px solid #e0e0e0' }
             }}>
               <TableCell sx={{ minWidth: 160, py: 1.5, position: 'sticky', left: 0, background: '#f6f8fa', zIndex: 3 }}>年度/月份</TableCell>
-              {rows.map((row) => (
-                <TableCell key={row.month}>{row.month}</TableCell>
+              {rows.map((row, rowI) => (
+                <TableCell key={`${rowI}${row.month}`}>{row.month}</TableCell>
               ))}
             </TableRow>
           </TableHead>
@@ -76,10 +88,10 @@ const RevenueTable: React.FC<RevenueTableProps> = ({ data }) => {
                 }}
               >
                 <TableCell sx={{ py: 1.5, position: 'sticky', left: 0, background: (colI % 2) === 1 ? '#f6f8fa' : '#fff', zIndex: 3 }}>{col.label}</TableCell>
-                {rows.map((row) => (
-                  <TableCell key={row.month} sx={{ py: 1.5 }}>
+                {rows.map((row, rowI) => (
+                  <TableCell key={`${rowI}${colI}${row.month}`} sx={{ py: 1.5 }}>
                     {
-                      { revenue: numberFormatter.format(row.revenue), growthLabel: row.growthLabel }[col.key]
+                      { revenue: !isNaN(row.revenue) ? numberFormatter.format(row.revenue) : row.revenue, growth: row.growth }[col.key]
                     }
                   </TableCell>
                 ))}

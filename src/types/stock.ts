@@ -15,12 +15,5 @@ export interface StockMonthRevenueEntity {
   revenue: number;
   revenue_month: number;
   revenue_year: number;
-  growth?: number;
-  growthLabel?: string;
-}
-
-export interface ChartData {
-  month: string;
-  revenue: number;
-  growth: number;
+  growth?: string;
 }

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -51,6 +51,7 @@ const quickRanges = [
   { label: '近 8 年', years: 8 }
 ];
 
+// 年份选择框（自定义选择年度范围场景）
 function renderYearSelect(value: string, onChange: (v: string) => void) {
   return (
     <Select
@@ -75,18 +76,26 @@ const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({ filterTimeRange, 
   const [customStart, setCustomStart] = useState(dayjs().subtract(5, 'year').format('YYYY'));
   const [customEnd, setCustomEnd] = useState(dayjs().format('YYYY'));
 
+  useEffect(() => {
+    // 初始化筛选时间范围
+    setFilterTimeRange([
+      dayjs().subtract(5, 'year').startOf('year').format('YYYY-MM-DD'),
+      dayjs().startOf('month').format('YYYY-MM-DD'),
+    ]);
+  }, [])
+
   const getLabel = () => {
     if (filterTimeRange.length === 2) {
       const start = dayjs(filterTimeRange[0]).format('YYYY');
-      const end = dayjs(filterTimeRange[1]).format('YYYY');
-      if (start === dayjs().subtract(3, 'year').startOf('year').format('YYYY')) return '近 3 年';
-      if (start === dayjs().subtract(5, 'year').startOf('year').format('YYYY')) return '近 5 年';
-      if (start === dayjs().subtract(8, 'year').startOf('year').format('YYYY')) return '近 8 年';
+      for (const item of quickRanges) {
+        if (start === dayjs().subtract(item.years, 'year').startOf('year').format('YYYY')) return item.label;
+      }
       return `自訂`;
     }
     return '选择区间';
   };
 
+  // 选择时间范围
   const handleSetRange = (start: string, end: string) => {
     setFilterTimeRange([start, end]);
     setAnchorEl(null);

@@ -10,7 +10,7 @@ interface CompanyHeaderProps {
 const CompanyHeader: React.FC<CompanyHeaderProps> = ({ name, code }) => (
   <Box>
     <Typography variant="h6" sx={{ mb: 0, textAlign: 'left' }}>
-      {name || '--'} ({code || '--'})
+      {name || '-'} ({code || '-'})
     </Typography>
   </Box>
 );
