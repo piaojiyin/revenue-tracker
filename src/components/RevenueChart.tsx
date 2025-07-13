@@ -75,7 +75,7 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
     <>
       <Box bgcolor="#fff">
         <ResponsiveContainer width="100%" height={320}>
-          <BarChart data={chartData} margin={{ top: 0, right: 0, left: 40, bottom: 0 }}>
+          <BarChart data={chartData} margin={{ top: 0, right: 0, left: 40, bottom: 0 }} barCategoryGap="20%">
             <XAxis
               dataKey="month"
               tick={{ fontSize: 12 }}
@@ -98,8 +98,8 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
               strokeWidth={1}
             />
             <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="revenue" name="每月營收" fill="#FFD600" />
-            <Line yAxisId="right" type="monotone" dataKey="growth" name="單月營收年增率 (%)" stroke="#B71C1C" dot={false} />
+            <Bar dataKey="revenue" name="每月營收" fill="#f6df99" stroke="#e8af00" />
+            <Line yAxisId="right" type="monotone" dataKey="growth" name="單月營收年增率 (%)" stroke="#B71C1C" dot={false} strokeWidth={2} />
             {/* Legend强制第1展示每月營收 */}
             <Legend
               verticalAlign="top"
