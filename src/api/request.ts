@@ -2,11 +2,11 @@
 import { apiFetch } from "./http";
 import dayjs from "dayjs";
 import { finMindApiRequestParams } from "../types/api";
-const FINMIND_API_BASE = process.env.NEXT_PUBLIC_FINMIND_API_BASE;
+const FINMIND_API_BASE_URL = process.env.NEXT_PUBLIC_FINMIND_API_BASE_URL;
 
 // 获取台股總覽
 export async function getStockInfoApi() {
-  return apiFetch(`${FINMIND_API_BASE}/data`, {
+  return apiFetch(`${FINMIND_API_BASE_URL}/data`, {
     method: "GET",
     params: {
       // 台股總覽
@@ -20,7 +20,7 @@ export async function getStockInfoApi() {
 
 // 获取月營收表
 export async function getStockMonthRevenueApi(data: finMindApiRequestParams) {
-  return apiFetch(`${FINMIND_API_BASE}/data`, {
+  return apiFetch(`${FINMIND_API_BASE_URL}/data`, {
     method: "GET",
     params: {
       // 月營收表
