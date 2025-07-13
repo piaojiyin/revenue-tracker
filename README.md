@@ -1,7 +1,8 @@
+## [评测原题](https://starktech.notion.site/Stark-Tech-1-2593796171d44c0b89af35dad29612fd) 
 # 营收追踪器
- 
 本项目是一个基于 Next.js + React 的企业营收数据可视化平台，支持股票搜索、月营收趋势图表、年增长率分析等功能。    
-[预览地址](https://www.laidoulaile.fun/)  
+## [预览地址](https://www.laidoulaile.fun/)  
+ 
 ## 主要功能
 - 支持台/美股代码搜索公司
 - 展示公司月度营收趋势图和年增长率
