@@ -1,8 +1,18 @@
-import { useTokenStore } from '../store/tokenStore';
+import { useTokenStore } from "../store/tokenStore";
+
+// 全局toast提示（非hook环境下的hack）
+function showGlobalToast(
+  msg: string,
+  severity: "error" | "success" | "info" | "warning" = "error"
+) {
+  if (typeof window !== "undefined" && (window as any).showToast) {
+    (window as any).showToast(msg, severity);
+  }
+}
 
 // 登录API封装，前端只请求本地/api/login
 export async function loginApi() {
-  const res = await fetch('/api/login', { method: 'POST' });
+  const res = await fetch("/api/login", { method: "POST" });
   return res.json();
 }
 
@@ -14,11 +24,11 @@ export async function apiFetch(
   options: RequestInit & {
     params?: Record<string, any>;
     data?: any;
-    contentType?: 'json' | 'form';
+    contentType?: "json" | "form";
   } = {}
 ) {
   const token = useTokenStore.getState().token;
-  let { params, data, contentType = 'json', ...restOptions } = options as any;
+  let { params, data, contentType = "json", ...restOptions } = options as any;
   let finalUrl = url;
   const headers: Record<string, string> = {
     ...(restOptions.headers instanceof Headers
@@ -26,29 +36,32 @@ export async function apiFetch(
       : (restOptions.headers as Record<string, string>) || {}),
   };
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
   // 处理 GET 请求参数
-  if (params && restOptions.method?.toUpperCase() === 'GET') {
+  if (params && restOptions.method?.toUpperCase() === "GET") {
     const queryString = new URLSearchParams(params).toString();
     if (queryString) {
-      finalUrl += (finalUrl.includes('?') ? '&' : '?') + queryString;
+      finalUrl += (finalUrl.includes("?") ? "&" : "?") + queryString;
     }
   }
   // 处理 POST/PUT 请求体
-  if (data && ['POST', 'PUT', 'PATCH'].includes((restOptions.method || '').toUpperCase())) {
-    if (contentType === 'form') {
+  if (
+    data &&
+    ["POST", "PUT", "PATCH"].includes((restOptions.method || "").toUpperCase())
+  ) {
+    if (contentType === "form") {
       // FormData
       if (!(data instanceof FormData)) {
         const form = new URLSearchParams();
         Object.entries(data).forEach(([k, v]) => form.append(k, v as any));
         data = form;
       }
-      headers['Content-Type'] = 'application/x-www-form-urlencoded';
+      headers["Content-Type"] = "application/x-www-form-urlencoded";
       restOptions.body = data.toString();
     } else {
       // 默认 JSON
-      headers['Content-Type'] = 'application/json';
+      headers["Content-Type"] = "application/json";
       restOptions.body = JSON.stringify(data);
     }
   }
@@ -59,17 +72,28 @@ export async function apiFetch(
       const loginData = await loginApi();
       if (loginData.status === 200 && loginData.token) {
         useTokenStore.getState().setToken(loginData.token);
-        headers['Authorization'] = `Bearer ${loginData.token}`;
+        headers["Authorization"] = `Bearer ${loginData.token}`;
         response = await fetch(finalUrl, { ...restOptions, headers });
       }
     }
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`API请求失败: ${response.status} ${response.statusText} - ${errorText}`);
-    }
     // 自动返回 json
-    return response.json();
+    const result = await response.json();
+    if (!response.ok) {
+      showGlobalToast(
+        `API请求失败: ${response.status} ${response.statusText} - ${result?.msg || JSON.stringify(result)}`,
+        "error"
+      );
+      throw new Error(
+        `API请求失败: ${response.status} ${response.statusText} - ${result?.msg || JSON.stringify(result)}`
+      );
+    }
+    if (result && result.status !== 200) {
+      showGlobalToast(result.msg || "接口返回异常", "error");
+      throw new Error(result.msg || "接口返回异常");
+    }
+    return result;
   } catch (error: any) {
+    showGlobalToast(error?.message || "网络异常", "error");
     throw new Error(`网络异常: ${error?.message || error}`);
   }
-} 
+}

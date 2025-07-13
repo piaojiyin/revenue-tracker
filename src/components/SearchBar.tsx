@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import { useTokenStore } from '../store/tokenStore';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
-import { getStockInfoApi } from '../api/request';
-import { useEffect } from 'react';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import { StockEntity } from '../types/stock';
 import Typography from '@mui/material/Typography';
+import { useStockInfo } from '../hooks/useStockInfo';
 
 interface SearchBarProps {
   onSearch: (stock: StockEntity) => void;
@@ -19,33 +18,16 @@ interface SearchBarProps {
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch, setCurrentStock }) => {
   const [keyword, setKeyword] = useState('');
-  const [options, setOptions] = useState<StockEntity[]>([]);
-  const [stockInfoData, setStockInfoData] = useState<StockEntity[]>([]);
-  const [loading, setLoading] = useState(false);
-  const token = useTokenStore((state) => state.token);
+  const token = useTokenStore((state) => state.token) || undefined;
   // 默认股票为台积电-2330
-  const defaultStockId = '2330';
+  const defaultStockId = process.env.NEXT_PUBLIC_DEFAULT_STOCK_ID;
 
-  useEffect(() => {
-    if (!token) return;
-    const fetchStockInfo = async () => {
-      setLoading(true);
-      try {
-        const res = await getStockInfoApi();
-        setStockInfoData(res.data || []);
-        setOptions(res.data || []);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchStockInfo();
-  }, [token]);
+  // 使用自定义hook获取股票信息
+  const { data: options, loading, error } = useStockInfo(token);
 
   useEffect(() => {
     // 默认选中第一个股票
     if (options && options.length > 0) {
-      console.log('options', options, options.find(o => o.stock_id === defaultStockId));
-      
       setCurrentStock(options.find(o => o.stock_id === defaultStockId) || options[0]);
     }
   }, [options]);
@@ -107,7 +89,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, setCurrentStock }) => {
             onSearch(value);
           }
         }}
-        sx={{ width: 500 }}
+        sx={{ width: { xs: '100%', sm: 500 } }}
         renderOption={(props, option, { inputValue }) => {
           const label = typeof option === 'string'
             ? option
@@ -153,6 +135,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, setCurrentStock }) => {
           />
         )}
       />
+      {error && <Typography color="error" variant="caption">股票信息加载失败</Typography>}
     </Box>
   );
 };

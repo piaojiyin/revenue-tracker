@@ -1,40 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# 营收追踪器
+ 
+本项目是一个基于 Next.js + React 的企业营收数据可视化平台，支持股票搜索、月营收趋势图表、年增长率分析等功能。    
+[预览地址](https://www.laidoulaile.fun/)  
+## 主要功能
+- 支持台/美股代码搜索公司
+- 展示公司月度营收趋势图和年增长率
+- 时间范围筛选
+- 全局错误提示（Toast）
+- 自动登录与 Token 管理
 
-## Getting Started
+## 快速启动
+1. 安装依赖
+   ```bash
+   npm install
+   ```
+2. 启动开发环境
+   ```bash
+   npm run dev
+   ```
+3. 访问
+   浏览器打开 [http://localhost:3000](http://localhost:3000)
 
-First, run the development server:
+## 部署说明
+1. 目前使用`Vercel` + `Cloudflare` 平台自动部署本github仓库的master分支。[预览地址](https://www.laidoulaile.fun/)
+2. 也可在自有服务器使用`docker`、`pm2`等工具部署。
+3. 本地部署
+   - 构建生产包
+   ```bash
+   npm run build
+   ```
+   - 启动生产服务
+   ```bash
+   npm start
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 主要技术栈
+- Next.js 15
+- React 19
+- TypeScript
+- Zustand（全局状态管理）
+- MUI（UI 组件库）
+- Recharts（数据可视化）
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 目录结构
+- `src/pages/`      页面入口
+- `src/components/` 复用组件
+- `src/hooks/`      业务逻辑与数据获取
+- `src/api/`        API 封装
+- `src/store/`      状态管理
+- `src/types/`      类型定义
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## 其他说明
+- 所有接口异常和业务错误均有全局 Toast 提示
+- Token 自动刷新，支持自动登录
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+---
+如需二次开发或有问题，欢迎提 issue 或联系作者。

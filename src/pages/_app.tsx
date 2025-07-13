@@ -4,6 +4,7 @@ import { CssBaseline } from '@mui/material';
 import { useEffect } from 'react';
 import { useTokenStore } from '../store/tokenStore';
 import { loginApi } from '../api/http';
+import { GlobalToastProvider } from '../components/GlobalToast';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const setToken = useTokenStore((state) => state.setToken);
@@ -21,12 +22,12 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, [setToken]);
 
   return (
-    <>
+    <GlobalToastProvider>
       <CssBaseline />
       <div style={{ minHeight: '100vh', background: '#ededed' }}>
         <Component {...pageProps} />
       </div>
-    </>
+    </GlobalToastProvider>
   );
 }
 

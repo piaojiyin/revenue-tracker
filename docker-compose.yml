@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  nextjs:
+    build: .
+    container_name: nextjs-app
+    ports:
+      - "3000:3000"  # 主机端口:容器端口
+    environment:
+      - NODE_ENV=production
+    restart: always  # 容器崩溃时自动重启
