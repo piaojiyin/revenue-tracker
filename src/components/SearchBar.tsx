@@ -73,13 +73,16 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, setCurrentStock }) => {
               ? `${option.stock_id} ${option.stock_name}`
               : ''
         }
-        filterOptions={(opts, state) =>
-          opts.filter(opt =>
-            typeof opt !== 'string' &&
-            (opt.stock_id?.includes(state.inputValue) ||
-              opt.stock_name?.includes(state.inputValue))
-          )
-        }
+        filterOptions={(opts, state) => {
+          if (state.inputValue.length < 1) return [];
+          return opts
+            .filter(opt =>
+              typeof opt !== 'string' &&
+              (opt.stock_id?.includes(state.inputValue) ||
+                opt.stock_name?.includes(state.inputValue))
+            )
+            .slice(0, 100); // 只显示前100条
+        }}
         loading={loading}
         inputValue={keyword}
         onInputChange={handleInputChange}
