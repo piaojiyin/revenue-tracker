@@ -62,6 +62,19 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data, loading, error }) => 
   const [chartData, setchartData] = useState<any[]>([]);
   const numberFormatter = new Intl.NumberFormat('zh-TW'); // 或 'zh-TW'、'zh-CN' 等
 
+  // 加入旋转动画样式
+  // 注意：style标签只能用于组件内JSX，服务端渲染时需注意安全
+  const spinnerStyle = (
+    <style>{`
+      @keyframes spin {
+        100% { transform: rotate(360deg); }
+      }
+      .loading-spinner-circle {
+        transform-origin: 110px 110px;
+        animation: spin 1s linear infinite;
+      }
+    `}</style>
+  );
 
   useEffect(() => {
     setchartData(
@@ -76,6 +89,7 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data, loading, error }) => 
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="300px">
+        {spinnerStyle}
         <Box position="relative" display="flex" justifyContent="center" alignItems="center" width={220} height={220}>
           <svg width="220" height="220">
             <circle
@@ -95,9 +109,8 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data, loading, error }) => 
               fill="none"
               strokeDasharray={2 * Math.PI * 105}
               strokeDashoffset={2 * Math.PI * 105 * 0.75}
+              className="loading-spinner-circle"
               style={{
-                transform: 'rotate(-90deg)',
-                transformOrigin: 'center',
                 transition: 'stroke-dashoffset 0.5s',
               }}
             />
