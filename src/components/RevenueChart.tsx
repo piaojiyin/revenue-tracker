@@ -1,3 +1,8 @@
+/*
+ * RevenueChart 组件
+ * 展示公司每月营收及年增率的可视化图表，支持 loading、error 状态
+ * 使用 recharts 进行数据可视化
+ */
 import React, { useEffect, useState } from 'react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, Line, CartesianGrid } from 'recharts';
 import Box from '@mui/material/Box';

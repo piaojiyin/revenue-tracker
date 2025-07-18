@@ -1,3 +1,7 @@
+/*
+ * useStockInfo 自定义 Hook
+ * 获取股票基础信息列表，支持 token 认证
+ */
 import { useState, useEffect } from 'react';
 import { getStockInfoApi } from '../api/request';
 import { StockEntity } from '../types/stock';

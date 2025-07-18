@@ -1,3 +1,8 @@
+/*
+ * RevenueTable 组件
+ * 用于展示公司营收数据的表格视图
+ * 依赖 MUI Table 组件
+ */
 import React, { useEffect, useState, useRef } from 'react';
 import { StockMonthRevenueEntity } from '../types/stock';
 import Table from '@mui/material/Table';

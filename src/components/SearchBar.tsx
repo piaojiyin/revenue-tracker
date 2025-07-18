@@ -1,3 +1,8 @@
+/*
+ * SearchBar 组件
+ * 股票搜索输入框，支持自动补全、关键字高亮、点击搜索
+ * 依赖 MUI Autocomplete
+ */
 import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';

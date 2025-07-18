@@ -1,3 +1,7 @@
+/*
+ * useStockRevenue 自定义 Hook
+ * 获取指定股票的营收数据，支持 token 认证
+ */
 import { useState, useEffect } from 'react';
 import { getStockMonthRevenueApi } from '../api/request';
 import { StockMonthRevenueEntity } from '../types/stock';

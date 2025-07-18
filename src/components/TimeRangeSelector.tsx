@@ -1,3 +1,8 @@
+/*
+ * TimeRangeSelector 组件
+ * 用于选择时间区间，筛选营收数据
+ * 依赖 MUI 相关组件
+ */
 import React, { useState, useRef, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';

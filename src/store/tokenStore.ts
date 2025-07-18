@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { TokenState } from '../types/user';
 
+// 创建一个 Zustand store，用于管理用户token
 export const useTokenStore = create<TokenState>()(
   persist(
     (set) => ({

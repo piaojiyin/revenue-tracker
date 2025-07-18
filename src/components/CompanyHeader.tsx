@@ -1,3 +1,8 @@
+/*
+ * CompanyHeader 组件
+ * 用于展示公司名称、代码等头部信息
+ * 依赖 MUI 组件库
+ */
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';

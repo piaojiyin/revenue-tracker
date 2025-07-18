@@ -1,3 +1,7 @@
+
+/**
+ * 資料集
+ */
 export interface finMindApiRequestParams {
   dataset?: string;
   data_id: string;

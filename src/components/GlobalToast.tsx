@@ -1,3 +1,8 @@
+/*
+ * GlobalToast 组件
+ * 用于全局消息提示（如操作成功、失败等）
+ * 依赖 MUI Snackbar
+ */
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
